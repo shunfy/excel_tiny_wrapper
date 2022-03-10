@@ -126,7 +126,7 @@ class PBExport3 extends utils.IExportWrapper {
 	}
 
 	private GenSheetType(sheetName: string, arrHeader: utils.SheetHeader[], tempMessage: string[]): { pbtype: string; } | undefined {
-		const arrExportHeader = utils.ExecGroupFilter(this._exportCfg.GroupFilter, arrHeader);
+		const arrExportHeader = utils.ExecGroupFilter(sheetName, this._exportCfg.GroupFilter, arrHeader);
 		if (arrExportHeader.length <= 0) {
 			utils.debug(`Pass Sheet ${utils.yellow_ul(sheetName)} : No Column To Export.`);
 			return;
@@ -215,7 +215,7 @@ class PBExport3 extends utils.IExportWrapper {
 	private async ExportData(dt: utils.SheetDataTable, outputFile: string) {
 		if (this._protoRoot == null) return;
 		const protoEncoder = this._protoRoot.lookupType(`${this._exportCfg.Namespace ? this._exportCfg.Namespace + '.' : ''}Arr${dt.name}`);
-		const arrExportHeader = utils.ExecGroupFilter(this._exportCfg.GroupFilter, dt.arrTypeHeader);
+		const arrExportHeader = utils.ExecGroupFilter(dt.name, this._exportCfg.GroupFilter, dt.arrTypeHeader);
 		if (arrExportHeader.length <= 0) {
 			return;
 		}

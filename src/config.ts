@@ -42,22 +42,29 @@ export function InitGlobalConfig(fpath: string = ''): boolean {
 	CTypeParser.TimeStampUseMS = gCfg.TimeStampUseMS;
 	CTypeParser.CustomDataNode = gCfg.CustomDataNode;
 	CTypeParser.FractionDigitsFMT = gCfg.FractionDigitsFMT;
-	if (gCfg.TypeCheckerJSFilePath) {
-		let gPath = gCfg.TypeCheckerJSFilePath;
-		if (!path.isAbsolute(gPath)) {
-			gPath = path.join(gRootDir, gPath);
-		}
-		if (!fs.existsSync(gPath)) {
-			utils.exception("config : {TypeCheckerJSFilePath} incorrect! path not found!");
-		}
-		CHightTypeChecker.TypeCheckerJSFilePath = gPath;
-		try {
-			require(gPath);
-		}
-		catch (ex) {
-			utils.exception("config: {TypeCheckerJSFilePath} incorrect! js file format error", ex);
-		}
+	if (utils.StrNotEmpty(gCfg.TypeCheckerJSFilePath)) {
+		setTypeCheckerJSFilePath(gCfg.TypeCheckerJSFilePath);
 	}
 
 	return true;
+}
+
+export function setTypeCheckerJSFilePath(jsPath: string) {
+	if (!path.isAbsolute(jsPath)) {
+		jsPath = path.join(gRootDir, jsPath);
+	}
+	let jsFile = jsPath
+	if (!utils.StrNotEmpty(path.parse(jsPath).ext)) {
+		jsFile = `${jsPath}.js`;
+	}
+	if (!fs.existsSync(jsFile)) {
+		utils.exception(`config : {TypeCheckerJSFilePath} incorrect! path not found! : ${jsFile}`);
+	}
+	CHightTypeChecker.TypeCheckerJSFilePath = jsPath;
+	try {
+		require(jsPath);
+	}
+	catch (ex) {
+		utils.exception(`config: {TypeCheckerJSFilePath} incorrect! js file format error ${jsPath}`, ex);
+	}
 }

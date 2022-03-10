@@ -2,7 +2,8 @@
   "name": "excel_tiny_wrapper",
   "version": "3.3.1",
   "description": "excel export with type check using nodejs in super fast speed!",
-  "main": "bin/index.js",
+  "bin": "dist/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "update_package": "npm uninstall --save xlsx chalk fs-extra-promise json_to_lua moment lodash && npm uninstall --save-dev @types/chalk @types/fs-extra-promise @types/lodash @types/moment @types/node @types/xlsx typescript && npm install --save xlsx chalk fs-extra-promise json_to_lua moment && npm install --save-dev @types/chalk @types/fs-extra-promise @types/lodash @types/moment @types/node @types/xlsx typescript"
@@ -11,21 +12,22 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.2",
+    "csv-parse": "^5.0.4",
     "fs-extra-promise": "^1.0.1",
     "json_to_lua": "^1.1.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
-    "protobufjs": "^6.9.0",
-    "xlsx": "^0.14.4"
+    "protobufjs": "^6.11.2",
+    "xlsx": "^0.18.3"
   },
   "devDependencies": {
     "@types/chalk": "^2.2.0",
-    "@types/fs-extra-promise": "^1.0.8",
-    "@types/lodash": "^4.14.136",
+    "@types/fs-extra-promise": "^1.0.10",
+    "@types/lodash": "^4.14.179",
     "@types/moment": "^2.13.0",
-    "@types/node": "^12.7.1",
+    "@types/node": "^12.20.46",
     "@types/xlsx": "0.0.36",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.10"
   },
   "repository": {
     "type": "git",

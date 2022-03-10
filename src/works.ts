@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra-promise';
 import * as utils from './utils';
 import { gCfg, gRootDir, gGlobalIgnoreDirName } from './config';
-import { HandleExcelFile } from './excel_utils';
+import { HandleExcelFile, HandleCsvFile } from './excel_utils';
 import { CHightTypeChecker } from './CHighTypeChecker';
 
 const gExportWrapperLst = new Array<utils.IExportWrapper>();
@@ -46,7 +46,11 @@ export async function execute(): Promise<boolean> {
 const WorkerMonitor = new utils.AsyncWorkMonitor();
 async function HandleExcelFileWork(fileName: string, cb: (ret: boolean) => void): Promise<void> {
 	WorkerMonitor.addWork();
-	cb(await HandleExcelFile(fileName));
+	if (path.extname(fileName) == '.csv') {
+		cb(await HandleCsvFile(fileName));
+	} else {
+		cb(await HandleExcelFile(fileName));
+	}
 	WorkerMonitor.decWork();
 }
 

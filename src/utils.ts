@@ -52,7 +52,7 @@ export function exceptionRecord(txt: string, ex?: any): void {
 ////////////////////////////////////////////////////////////////////////////////
 //#region base function
 export function StrNotEmpty(s: any): s is string {
-	if (isString(s)) {
+	if (typeof s === 'string') {
 		return s.trim().length > 0;
 	}
 	return false;
@@ -128,6 +128,16 @@ export class AsyncWorkMonitor {
 	}
 	private _leftCnt = 0;
 }
+//#endregion
+
+////////////////////////////////////////////////////////////////////////////////
+//#region ignore color filter file list
+
+const IgnoreColorFilterSheetSet = new Set<string>();
+export function AddIgnoreSheet(sheetName: string) {
+	IgnoreColorFilterSheetSet.add(sheetName);
+}
+
 //#endregion
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -269,8 +279,8 @@ export abstract class IExportWrapper {
 		}
 		return ok;
 	}
-	protected abstract async ExportTo(dt: SheetDataTable): Promise<boolean>;
-	protected abstract async ExportGlobal(): Promise<boolean>;
+	protected abstract ExportTo(dt: SheetDataTable): Promise<boolean>;
+	protected abstract ExportGlobal(): Promise<boolean>;
 	protected CreateDir(outdir: string): boolean {
 		if (!fs.existsSync(outdir)) {
 			fs.ensureDirSync(outdir);
@@ -291,7 +301,12 @@ export abstract class IExportWrapper {
 }
 
 
-export function ExecGroupFilter(arrGrpFilters: Array<string>, arrHeader: Array<SheetHeader>): Array<SheetHeader> {
+export function ExecGroupFilter(sheetName: string, arrGrpFilters: Array<string>, arrHeader: Array<SheetHeader>): Array<SheetHeader> {
+	// is ignore color filter
+	if (IgnoreColorFilterSheetSet.has(sheetName)) {
+		return arrHeader;
+	}
+
 	let result = new Array<SheetHeader>();
 	if (arrGrpFilters.length <= 0)
 		return result;

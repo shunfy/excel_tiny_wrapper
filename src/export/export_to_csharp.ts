@@ -134,7 +134,7 @@ class CSDExport extends utils.IExportWrapper {
 	}
 
 	private GenSheetType(sheetName: string, arrHeader: utils.SheetHeader[]): string | undefined {
-		const arrExportHeader = utils.ExecGroupFilter(this._exportCfg.GroupFilter, arrHeader);
+		const arrExportHeader = utils.ExecGroupFilter(sheetName, this._exportCfg.GroupFilter, arrHeader);
 		if (arrExportHeader.length <= 0) {
 			utils.debug(`Pass Sheet ${utils.yellow_ul(sheetName)} : No Column To Export.`);
 			return;

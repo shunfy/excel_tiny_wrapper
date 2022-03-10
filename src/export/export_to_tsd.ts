@@ -88,7 +88,7 @@ class TSDExport extends utils.IExportWrapper {
 		}
 
 		let data = '';
-		let type = '{\n';
+		let type = `{${utils.LineBreaker}`;
 		const exportexp = FMT.indexOf('export') >= 0 ? 'export ' : '';
 		const array = [];
 		for (let [k, v] of utils.ExportExcelDataMap) {
@@ -101,11 +101,11 @@ class TSDExport extends utils.IExportWrapper {
 			const name = db.name;
 			let ctx = this.GenSheetType(name, db.arrTypeHeader);
 			if (ctx) {
-				data += `${exportexp}${ctx.type}${exportexp}${ctx.tbtype}\n\n`;
-				type += `    ${name}: T${name};\n`;
+				data += `${exportexp}${ctx.type}${exportexp}${ctx.tbtype}${utils.LineBreaker}${utils.LineBreaker}`;
+				type += `    ${name}: T${name};${utils.LineBreaker}`;
 			}
 		}
-		type += `}\n`;
+		type += `}${utils.LineBreaker}`;
 		FMT.indexOf('{data}');
 		data = FMT.replace('{data}', data).replace('{type}', type);
 		await fs.writeFileAsync(outdir, data, { encoding: 'utf8', flag: 'w' });
@@ -115,19 +115,19 @@ class TSDExport extends utils.IExportWrapper {
 	}
 
 	private GenSheetType(sheetName: string, arrHeader: utils.SheetHeader[]): { type: string, tbtype: string, } | undefined {
-		const arrExportHeader = utils.ExecGroupFilter(this._exportCfg.GroupFilter, arrHeader);
+		const arrExportHeader = utils.ExecGroupFilter(sheetName, this._exportCfg.GroupFilter, arrHeader);
 		if (arrExportHeader.length <= 0) {
 			utils.debug(`Pass Sheet ${utils.yellow_ul(sheetName)} : No Column To Export.`);
 			return;
 		}
 
-		let type = `type ${sheetName} = {\n`;
+		let type = `type ${sheetName} = {${utils.LineBreaker}`;
 		for (let header of arrExportHeader) {
 			if (header.comment) continue;
-			type += `    ${this.TranslateColName(header.name)}${this.GenTypeName(header.typeChecker.type, false)};\n`;
+			type += `    ${this.TranslateColName(header.name)}${this.GenTypeName(header.typeChecker.type, false)};${utils.LineBreaker}`;
 		}
-		type += '}\n';
-		let tbtype = `type T${sheetName} = {[Key in number|string]?: ${sheetName}};\n`;
+		type += `}${utils.LineBreaker}`;
+		let tbtype = `type T${sheetName} = {[Key in number|string]?: ${sheetName}};${utils.LineBreaker}`;
 		return { type, tbtype };
 	}
 

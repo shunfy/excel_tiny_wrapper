@@ -62,7 +62,7 @@ class JSExport extends utils.IExportWrapper {
 	protected async ExportTo(dt: utils.SheetDataTable): Promise<boolean> {
 		const outdir = this._exportCfg.OutputDir;
 		let jsObj = {};
-		const arrExportHeader = utils.ExecGroupFilter(this._exportCfg.GroupFilter, dt.arrTypeHeader);
+		const arrExportHeader = utils.ExecGroupFilter(dt.name, this._exportCfg.GroupFilter, dt.arrTypeHeader);
 		if (arrExportHeader.length <= 0) {
 			utils.debug(`Pass Sheet ${utils.yellow_ul(dt.name)} : No Column To Export.`);
 			return true;

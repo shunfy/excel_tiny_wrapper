@@ -44,7 +44,7 @@ function exportToSingleLuaContent(exportWrapper: utils.IExportWrapper, sheetName
 		headLst.push(`local ${head.shortName} = "${name}"`);
 		NameMapToShort.set(name, head.shortName);
 	}
-	const headContent = headLst.join('\n');
+	const headContent = headLst.join(utils.LineBreaker);
 	const tableLst = new Array<string>();
 	for (let id of jsObj["ids"]) {
 		const objLst = new Array<string>();
@@ -54,9 +54,9 @@ function exportToSingleLuaContent(exportWrapper: utils.IExportWrapper, sheetName
 			if (jsObjSingle[name] == undefined) continue;
 			objLst.push(`\t\t[${hdr.shortName}] = ${json_to_lua.jsObjectToLua(jsObjSingle[name])},`);
 		}
-		tableLst.push(`\t${json_to_lua.makeLuaKey(id)} = {\n${objLst.join('\n')}\n\t},`);
+		tableLst.push(`\t${json_to_lua.makeLuaKey(id)} = {${utils.LineBreaker}${objLst.join(utils.LineBreaker)}${utils.LineBreaker}\t},`);
 	}
-	return { head: headContent, data: `{\n${tableLst.join('\n')}\n}` };
+	return { head: headContent, data: `{${utils.LineBreaker}${tableLst.join(utils.LineBreaker)}${utils.LineBreaker}}` };
 }
 
 class LuaExport extends utils.IExportWrapper {
@@ -66,7 +66,7 @@ class LuaExport extends utils.IExportWrapper {
 	protected async ExportTo(dt: utils.SheetDataTable): Promise<boolean> {
 		const outdir = this._exportCfg.OutputDir;
 		let jsonObj = { ids: [] };
-		const arrExportHeader = utils.ExecGroupFilter(this._exportCfg.GroupFilter, dt.arrTypeHeader);
+		const arrExportHeader = utils.ExecGroupFilter(dt.name, this._exportCfg.GroupFilter, dt.arrTypeHeader);
 		if (arrExportHeader.length <= 0) {
 			utils.debug(`Pass Sheet ${utils.yellow_ul(dt.name)} : No Column To Export.`);
 			return true;
@@ -100,14 +100,14 @@ class LuaExport extends utils.IExportWrapper {
 				const NameRex = new RegExp('{name}', 'g');
 				let luacontent = FMT.replace(NameRex, dt.name).replace('{data}', dataCtx.data);
 				if (utils.StrNotEmpty(dataCtx.head)) {
-					luacontent = `${dataCtx.head}\n${luacontent}`;
+					luacontent = `${dataCtx.head}${utils.LineBreaker}${luacontent}`;
 				}
 				const outfile = path.join(outdir, dt.name + this._exportCfg.ExtName);
 				await fs.writeFileAsync(outfile, luacontent, { encoding: 'utf8', flag: 'w+' });
 				utils.debug(`${utils.green('[SUCCESS]')} Output file "${utils.yellow_ul(outfile)}". `
 					+ `Total use tick:${utils.green(utils.TimeUsed.LastElapse())}`);
 			} catch (ex) {
-				utils.exception(ex);
+				utils.exception(`${ex}`);
 			}
 		}
 		return true;

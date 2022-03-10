@@ -8,9 +8,9 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Launch Program",
-			"program": "${workspaceFolder}\\bin\\index.js",
+			"program": "${workspaceFolder}/dist/index.js",
 			"args": [
-				"./src/config_tpl.json"
+				"${workspaceFolder}/src/config_tpl.json"
 			],
 			"outFiles": [
 				"${workspaceFolder}/**/*.js"
